@@ -6,10 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "cyo": "cypress open",
-    "cyr": "cypress run",
-    "wait-on-dev": "yarn dev & wait-on http://localhost:3000"
+    "lint": "next lint"
   },
   "dependencies": {
     "@chakra-ui/icons": "^2.0.11",
@@ -29,10 +26,8 @@
     "@types/node": "18.8.4",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
-    "cypress": "^10.9.0",
     "eslint": "8.25.0",
     "eslint-config-next": "12.3.1",
-    "typescript": "4.8.4",
-    "wait-on": "^6.0.1"
+    "typescript": "4.8.4"
   }
 }
