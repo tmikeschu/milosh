@@ -15,6 +15,8 @@ export type Day = typeof DAYS[number];
 export type Plan = Record<Day, number>;
 
 export type Store = Plan & {
+  selectedDay: Day | null;
+  setSelectedDay: (day: Day | null) => void;
   setDay: (val: { day: Day; value: number }) => void;
   reset: () => void;
 };
@@ -29,6 +31,8 @@ export const useStore = create<Store>((set) => {
     saturday: 0,
     sunday: 0,
     setDay: ({ day, value }) => set({ [day]: value }),
+    selectedDay: null,
+    setSelectedDay: (day) => set({ selectedDay: day }),
     reset: () =>
       set(
         DAYS.reduce((acc, el) => {

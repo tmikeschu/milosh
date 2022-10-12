@@ -10,6 +10,14 @@ import {
   AccordionIcon,
   ButtonGroup,
   Heading,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  ModalOverlay,
+  ModalCloseButton,
+  ModalContent,
+  toVarReference,
 } from "@chakra-ui/react";
 import { useLocalStorage } from "react-use";
 import produce from "immer";
@@ -17,6 +25,7 @@ import { useStore, Day, DAYS, StoreUtils } from "../store";
 import { SavedConfig } from "../components/saved-config";
 import { DaySlider } from "../components/day-slider";
 import type { NextPage } from "next";
+import { ArrowUpDownIcon } from "@chakra-ui/icons";
 
 const SAVED_PLANS_KEY = "saved-plans";
 
@@ -44,9 +53,42 @@ const App: NextPage = () => {
 
       <HStack p={["2", "4"]} w="full" maxW="xl">
         {DAYS.map((day) => (
-          <DaySlider key={day} day={day} />
+          <DaySlider
+            key={day}
+            day={day}
+            formControlProps={{ isDisabled: true }}
+          />
         ))}
       </HStack>
+
+      {store.selectedDay && (
+        <Modal isOpen onClose={() => store.setSelectedDay(null)} size="full">
+          <ModalOverlay />
+          <ModalContent h="full">
+            <ModalHeader>{store.selectedDay}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody h="full">
+              <DaySlider
+                day={store.selectedDay}
+                formControlProps={{ h: "full" }}
+                sliderThumbProps={{
+                  boxSize: 10,
+                  children: <ArrowUpDownIcon w="6" h="6" color="purple.300" />,
+                }}
+              />
+            </ModalBody>
+            <ModalFooter>
+              <Button
+                colorScheme="purple"
+                mr={3}
+                onClick={() => store.setSelectedDay(null)}
+              >
+                Done
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
 
       <ButtonGroup size="sm" py="4">
         <Button onClick={store.reset}>Clear</Button>
