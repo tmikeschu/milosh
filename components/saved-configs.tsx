@@ -8,7 +8,7 @@ import {
   useToast,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useLocalStorage } from "react-use";
+import { useLocalStorage, useMountedState } from "react-use";
 import produce from "immer";
 import { Day } from "../store";
 import { SavedConfig } from "./saved-config";
@@ -18,6 +18,11 @@ import * as React from "react";
 const SAVED_PLANS_KEY = "saved-plans";
 
 export const SavedConfigs: React.FC = () => {
+  // Because we're using `useLocalStorage`,
+  // we need to check if the component is mounted
+  // so the SSR matches the initial browser render
+  const isMounted = useMountedState();
+
   const [savedPlans = [], setSavedPlans] = useLocalStorage<
     Record<Day, number>[]
   >(SAVED_PLANS_KEY, []);
@@ -39,6 +44,9 @@ export const SavedConfigs: React.FC = () => {
       setIndexToDelete(null);
     },
   });
+
+  if (!isMounted()) return null;
+
   return (
     <>
       <Accordion allowToggle w="full" maxW="xl">
