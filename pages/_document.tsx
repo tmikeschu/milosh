@@ -6,10 +6,6 @@ import Document, {
   DocumentContext,
 } from "next/document";
 
-const APP_NAME = "How Much Should I Run Today?";
-const APP_ACRONYM = "HMSIRT";
-const APP_DESCRIPTION = "A weekly mileage planner";
-
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
     return await Document.getInitialProps(ctx);
