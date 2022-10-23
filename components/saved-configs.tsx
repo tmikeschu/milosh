@@ -8,14 +8,11 @@ import {
   useToast,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useLocalStorage, useMountedState } from "react-use";
-import produce from "immer";
-import { Day } from "../store";
+import { useMountedState } from "react-use";
+import { useStore } from "../store";
 import { SavedConfig } from "./saved-config";
 import { DeleteSavedConfigAlert } from "./delete-saved-config-alert";
 import * as React from "react";
-
-const SAVED_PLANS_KEY = "saved-plans";
 
 export const SavedConfigs: React.FC = () => {
   // Because we're using `useLocalStorage`,
@@ -23,19 +20,13 @@ export const SavedConfigs: React.FC = () => {
   // so the SSR matches the initial browser render
   const isMounted = useMountedState();
 
-  const [savedPlans = [], setSavedPlans] = useLocalStorage<
-    Record<Day, number>[]
-  >(SAVED_PLANS_KEY, []);
+  const { savedPlans, removePlan } = useStore();
   const toast = useToast();
 
   const [indexToDelete, setIndexToDelete] = React.useState<number | null>(null);
   const deleteSavedConfig = () => {
     if (indexToDelete === null) return;
-
-    const updated = produce(savedPlans, (draft) => {
-      draft.splice(indexToDelete, 1);
-    });
-    setSavedPlans(updated);
+    removePlan(indexToDelete);
     toast({ status: "success", title: "Plan deleted" });
   };
 

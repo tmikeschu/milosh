@@ -7,20 +7,17 @@ import {
   Heading,
   useToast,
 } from "@chakra-ui/react";
-import { useLocalStorage } from "react-use";
 import { useStore, Day, DAYS, StoreUtils } from "../store";
 import { DaySlider } from "../components/day-slider";
 import type { NextPage } from "next";
 import { SavedConfigs } from "../components/saved-configs";
 import { DaySliderModal } from "../components/day-slider-modal";
-
-const SAVED_PLANS_KEY = "saved-plans";
+import { useLegacySavedConfigs } from "../hooks/use-legacy-saved-configs";
 
 const App: NextPage = () => {
+  useLegacySavedConfigs();
+
   const store = useStore();
-  const [savedPlans = [], setSavedPlans] = useLocalStorage<
-    Record<Day, number>[]
-  >(SAVED_PLANS_KEY, []);
   const toast = useToast();
 
   return (
@@ -52,17 +49,8 @@ const App: NextPage = () => {
         <Button
           colorScheme="purple"
           onClick={() => {
-            const config = StoreUtils.getPlan(store);
-            setSavedPlans(
-              [...savedPlans, config]
-                .sort((a, b) => StoreUtils.getTotal(b) - StoreUtils.getTotal(a))
-                .filter(
-                  (config, i, orig) =>
-                    orig.findIndex((c) => {
-                      return JSON.stringify(c) === JSON.stringify(config);
-                    }) === i
-                )
-            );
+            const plan = StoreUtils.getPlan(store);
+            store.addPlan(plan);
             toast({ status: "success", title: "Plan saved" });
           }}
         >
