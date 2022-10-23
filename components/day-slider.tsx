@@ -12,6 +12,7 @@ import {
   SliderProps,
   SliderThumbProps,
   FormControlProps,
+  Box,
 } from "@chakra-ui/react";
 import { Day, StoreUtils, useStore } from "../store";
 
@@ -54,28 +55,34 @@ export const DaySlider: React.FC<DaySliderProps> = ({
         mi
       </Text>
 
-      <Slider
-        colorScheme="purple"
-        value={store[day]}
-        onChange={(value) => store.setDay({ day, value })}
-        orientation="vertical"
-        min={0}
-        max={StoreUtils.getMax(store) + 1}
-        focusThumbOnChange={false}
-        {...sliderProps}
+      <Box
         onClick={() => store.setSelectedDay(day)}
-        pointerEvents="auto"
-        isDisabled={
-          sliderProps.isDisabled ||
-          formControlProps.isDisabled ||
-          store.selectedDay !== day
-        }
+        h="full"
+        cursor="pointer"
+        role="button"
       >
-        <SliderTrack>
-          <SliderFilledTrack />
-        </SliderTrack>
-        <SliderThumb {...sliderThumbProps} />
-      </Slider>
+        <Slider
+          colorScheme="purple"
+          value={store[day]}
+          onChange={(value) => store.setDay({ day, value })}
+          orientation="vertical"
+          min={0}
+          max={StoreUtils.getMax(store) + 1}
+          focusThumbOnChange={false}
+          {...sliderProps}
+          pointerEvents="auto"
+          isDisabled={
+            sliderProps.isDisabled ||
+            formControlProps.isDisabled ||
+            store.selectedDay !== day
+          }
+        >
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb {...sliderThumbProps} />
+        </Slider>
+      </Box>
     </FormControl>
   );
 };
