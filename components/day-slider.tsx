@@ -30,17 +30,9 @@ export const DaySlider: React.FC<DaySliderProps> = ({
   const store = useStore();
 
   return (
-    <FormControl
-      as={VStack}
-      key={day}
-      h="60"
-      flex="1"
-      isDisabled={store.selectedDay !== day}
-      onClick={() => store.setSelectedDay(day)}
-      {...formControlProps}
-    >
+    <FormControl as={VStack} key={day} h="60" flex="1" {...formControlProps}>
       <FormLabel color="gray.400" margin="0">
-        {day.substr(0, 3)}
+        {day.slice(0, 3)}
       </FormLabel>
 
       <Input
@@ -71,7 +63,13 @@ export const DaySlider: React.FC<DaySliderProps> = ({
         max={StoreUtils.getMax(store) + 1}
         focusThumbOnChange={false}
         {...sliderProps}
-        isDisabled={sliderProps.isDisabled || formControlProps.isDisabled}
+        onClick={() => store.setSelectedDay(day)}
+        pointerEvents="auto"
+        isDisabled={
+          sliderProps.isDisabled ||
+          formControlProps.isDisabled ||
+          store.selectedDay !== day
+        }
       >
         <SliderTrack>
           <SliderFilledTrack />

@@ -41,11 +41,7 @@ const App: NextPage = () => {
 
       <HStack p={["2", "4"]} w="full" maxW="xl">
         {DAYS.map((day) => (
-          <DaySlider
-            key={day}
-            day={day}
-            formControlProps={{ isDisabled: true }}
-          />
+          <DaySlider key={day} day={day} />
         ))}
       </HStack>
 
