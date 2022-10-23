@@ -57,14 +57,12 @@ const App: NextPage = () => {
           colorScheme="purple"
           onClick={() => {
             const config = StoreUtils.getPlan(store);
-            console.log({ config, savedPlans });
             setSavedPlans(
               [...savedPlans, config]
                 .sort((a, b) => StoreUtils.getTotal(b) - StoreUtils.getTotal(a))
                 .filter(
                   (config, i, orig) =>
                     orig.findIndex((c) => {
-                      console.log(JSON.stringify(c), JSON.stringify(config));
                       return JSON.stringify(c) === JSON.stringify(config);
                     }) === i
                 )
