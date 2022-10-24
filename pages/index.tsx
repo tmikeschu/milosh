@@ -20,7 +20,7 @@ const App: NextPage = () => {
   const toast = useToast();
 
   return (
-    <VStack p={["2", "4"]} h="100vh">
+    <VStack px={["2", "4"]} py={["8", "10"]} h="100vh">
       <Heading
         as="h1"
         fontSize="lg"
@@ -28,7 +28,7 @@ const App: NextPage = () => {
         fontWeight="bold"
         color="purple.500"
       >
-        Weekly mileage planner
+        How much should I run today?
       </Heading>
 
       <Text as="b" fontWeight="bold" fontSize="3xl" color="gray.700">
