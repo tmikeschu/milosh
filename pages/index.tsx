@@ -11,7 +11,6 @@ import { useStore, Day, DAYS, StoreUtils } from "../store";
 import { DaySlider } from "../components/day-slider";
 import type { NextPage } from "next";
 import { SavedPlans } from "../components/saved-plans/saved-plans";
-import { DaySliderModal } from "../components/day-slider-modal";
 import { useLegacySavedPlans } from "../hooks/use-legacy-saved-plans";
 
 const App: NextPage = () => {
@@ -21,7 +20,7 @@ const App: NextPage = () => {
   const toast = useToast();
 
   return (
-    <VStack p={["2", "4"]}>
+    <VStack p={["2", "4"]} h="100vh">
       <Heading
         as="h1"
         fontSize="lg"
@@ -36,13 +35,11 @@ const App: NextPage = () => {
         {StoreUtils.getTotal(store)}mi
       </Text>
 
-      <HStack p={["2", "4"]} w="full" maxW="xl">
+      <HStack p={["2", "4"]} w="full" maxW="xl" flex="1" alignItems="stretch">
         {DAYS.map((day) => (
           <DaySlider key={day} day={day} />
         ))}
       </HStack>
-
-      <DaySliderModal />
 
       <ButtonGroup size="sm" py="4">
         <Button onClick={store.reset}>Clear</Button>

@@ -18,7 +18,6 @@ export type Day = typeof DAYS[number];
 export type Plan = Record<Day, number>;
 
 export type StoreEffect = {
-  setSelectedDay: (day: Day | null) => void;
   setDay: (val: { day: Day; value: number }) => void;
   reset: () => void;
   addPlan: (plan: Plan) => void;
@@ -27,7 +26,6 @@ export type StoreEffect = {
 
 export type Store = StoreEffect &
   Plan & {
-    selectedDay: Day | null;
     savedPlans: Plan[];
   };
 
@@ -44,8 +42,6 @@ export const useStore = create<Store>()(
         sunday: 0,
         savedPlans: [],
         setDay: ({ day, value }) => set({ [day]: value }),
-        selectedDay: null,
-        setSelectedDay: (day) => set({ selectedDay: day }),
         addPlan: (plan) =>
           set((current) => ({
             savedPlans: R.pipe(
