@@ -10,12 +10,12 @@ import {
 import { useStore, Day, DAYS, StoreUtils } from "../store";
 import { DaySlider } from "../components/day-slider";
 import type { NextPage } from "next";
-import { SavedConfigs } from "../components/saved-configs";
+import { SavedPlans } from "../components/saved-plans/saved-plans";
 import { DaySliderModal } from "../components/day-slider-modal";
-import { useLegacySavedConfigs } from "../hooks/use-legacy-saved-configs";
+import { useLegacySavedPlans } from "../hooks/use-legacy-saved-plans";
 
 const App: NextPage = () => {
-  useLegacySavedConfigs();
+  useLegacySavedPlans();
 
   const store = useStore();
   const toast = useToast();
@@ -58,7 +58,7 @@ const App: NextPage = () => {
         </Button>
       </ButtonGroup>
 
-      <SavedConfigs />
+      <SavedPlans />
     </VStack>
   );
 };

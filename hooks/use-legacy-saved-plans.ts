@@ -3,7 +3,7 @@ import { useLocalStorage } from "react-use";
 import { SAVED_PLANS_KEY } from "../components/constants";
 import { Day, useStore } from "../store";
 
-export function useLegacySavedConfigs() {
+export function useLegacySavedPlans() {
   const store = useStore();
   const [savedPlans = [], setSavedPlans] = useLocalStorage<
     Record<Day, number>[]

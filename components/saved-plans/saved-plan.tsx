@@ -9,20 +9,22 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
-import { Day, useStore } from "../store";
+import { Day, useStore } from "../../store";
 import { useState } from "react";
+import { useSavedPlansContext } from "./context";
 
 const DAY_LABEL_LENGTH = 1;
 const TOTAL_LABEL = "Σ";
 
-export const SavedConfig: React.FC<{
-  config: Record<Day, number>;
+export const SavedPlan: React.FC<{
+  plan: Record<Day, number>;
   index: number;
   onDelete: () => void;
-}> = ({ config, index: i, onDelete }) => {
+}> = ({ plan, index: i, onDelete }) => {
   const isXs = useBreakpointValue({ xs: true, sm: false }) ?? true;
 
   const [isActive, setIsActive] = useState(false);
+  const savedPlansContext = useSavedPlansContext();
 
   return (
     <Flex
@@ -63,7 +65,7 @@ export const SavedConfig: React.FC<{
 
         <Divider orientation="vertical" borderColor="purple.200" />
 
-        {(Object.entries(config) as [Day, number][]).map(([day, number]) => (
+        {(Object.entries(plan) as [Day, number][]).map(([day, number]) => (
           <Stack
             direction="column"
             fontSize={["sm", "md"]}
@@ -71,7 +73,7 @@ export const SavedConfig: React.FC<{
             key={day}
           >
             <Text color="gray.800" fontWeight="bold">
-              {day.substr(0, DAY_LABEL_LENGTH)}
+              {day.slice(0, DAY_LABEL_LENGTH)}
             </Text>
             <Text color="purple.800">{number}</Text>
           </Stack>
@@ -86,7 +88,7 @@ export const SavedConfig: React.FC<{
           alignItems="center"
         >
           <Text>{TOTAL_LABEL}</Text>
-          <Text>{Object.values(config).reduce((a, b) => a + b)}</Text>
+          <Text>{Object.values(plan).reduce((a, b) => a + b)}</Text>
         </Stack>
       </Stack>
 
@@ -101,7 +103,10 @@ export const SavedConfig: React.FC<{
             variant="ghost"
             size="sm"
             borderRadius="full"
-            onClick={() => useStore.setState(config)}
+            onClick={() => {
+              useStore.setState(plan);
+              savedPlansContext.modalDisclosure.onClose();
+            }}
             aria-label="Copy miles plan"
             icon={<CopyIcon />}
           />

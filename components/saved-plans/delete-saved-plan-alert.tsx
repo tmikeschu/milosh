@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-export const DeleteSavedConfigAlert: React.FC<
+export const DeleteSavedPlanAlert: React.FC<
   Omit<AlertDialogProps, "leastDestructiveRef" | "children"> & {
     onConfirm: () => void;
   }
@@ -21,7 +21,7 @@ export const DeleteSavedConfigAlert: React.FC<
     <AlertDialog {...{ ...props, leastDestructiveRef }}>
       <AlertDialogOverlay />
       <AlertDialogContent>
-        <AlertDialogHeader>Delete saved config?</AlertDialogHeader>
+        <AlertDialogHeader>Delete saved plan?</AlertDialogHeader>
         <AlertDialogCloseButton />
         <AlertDialogFooter>
           <ButtonGroup>
