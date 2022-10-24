@@ -12,9 +12,11 @@ import { DaySlider } from "../components/day-slider";
 import type { NextPage } from "next";
 import { SavedPlans } from "../components/saved-plans/saved-plans";
 import { useLegacySavedPlans } from "../hooks/use-legacy-saved-plans";
+import { usePromptNewVersion } from "../hooks/use-prompt-new-version";
 
 const App: NextPage = () => {
   useLegacySavedPlans();
+  usePromptNewVersion();
 
   const store = useStore();
   const toast = useToast();
