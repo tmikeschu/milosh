@@ -1,6 +1,7 @@
 import produce from "immer";
 import create from "zustand";
 import { persist } from "zustand/middleware";
+import * as R from "remeda";
 
 export const DAYS = [
   "monday",
@@ -46,7 +47,13 @@ export const useStore = create<Store>()(
         selectedDay: null,
         setSelectedDay: (day) => set({ selectedDay: day }),
         addPlan: (plan) =>
-          set((current) => ({ savedPlans: [...current.savedPlans, plan] })),
+          set((current) => ({
+            savedPlans: R.pipe(
+              [...current.savedPlans, plan],
+              R.sortBy<Plan>([StoreUtils.getTotal, "desc"]),
+              R.uniqBy(JSON.stringify)
+            ),
+          })),
         removePlan: (index) => {
           set(({ savedPlans }) => {
             const updated = produce(savedPlans, (draft) => {
