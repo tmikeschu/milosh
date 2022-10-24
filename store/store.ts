@@ -15,33 +15,47 @@ export const DAYS = [
 
 export type Day = typeof DAYS[number];
 
-export type Plan = Record<Day, number>;
+export interface DayConfig {
+  day: Day;
+  values: number[];
+}
 
-export type StoreEffect = {
+export type Plan = Record<Day, number[] | number>;
+
+export interface StoreEffect {
+  days: DayConfig[];
   setDay: (val: { day: Day; value: number }) => void;
   reset: () => void;
   addPlan: (plan: Plan) => void;
   removePlan: (index: number) => void;
-};
+}
 
-export type Store = StoreEffect &
-  Plan & {
-    savedPlans: Plan[];
-  };
+export interface Store extends StoreEffect {
+  savedPlans: Plan[];
+}
 
 export const useStore = create<Store>()(
   persist(
     (set, _get) => {
       return {
-        monday: 0,
-        tuesday: 0,
-        wednesday: 0,
-        thursday: 0,
-        friday: 0,
-        saturday: 0,
-        sunday: 0,
-        savedPlans: [],
-        setDay: ({ day, value }) => set({ [day]: value }),
+        days: [
+          { day: "monday", values: [0] },
+          { day: "tuesday", values: [0] },
+          { day: "wednesday", values: [0] },
+          { day: "thursday", values: [0] },
+          { day: "friday", values: [0] },
+          { day: "saturday", values: [0] },
+          { day: "sunday", values: [0] },
+        ],
+        savedPlans: [] as Plan[],
+        setDay: ({ day, value }) =>
+          set((current) => {
+            return {
+              days: produce(current.days, (draft) => {
+                draft.find((d) => d.day === day)!.values = [value];
+              }),
+            };
+          }),
         addPlan: (plan) =>
           set((current) => ({
             savedPlans: R.pipe(
@@ -60,12 +74,9 @@ export const useStore = create<Store>()(
         },
 
         reset: () =>
-          set(
-            DAYS.reduce((acc, el) => {
-              acc[el] = 0;
-              return acc;
-            }, {} as Plan)
-          ),
+          set({
+            days: DAYS.map((day) => ({ day, values: [0] })),
+          }),
       };
     },
     {
@@ -75,12 +86,35 @@ export const useStore = create<Store>()(
 );
 
 export const StoreUtils = {
-  getMax: (store: Store): number => Math.max(...DAYS.map((day) => store[day])),
+  getMax: (store: Store): number =>
+    Math.max(
+      ...DAYS.map((day) =>
+        [0]
+          .concat(StoreUtils.getDay(store, day).values)
+          .reduce((a, b) => a + b, 0)
+      )
+    ),
   getTotal: <P extends Plan>(plan: P): number =>
-    DAYS.reduce((total, day) => total + plan[day], 0),
+    DAYS.reduce(
+      (total, day) => total + [0].concat(plan[day]).reduce((a, b) => a + b),
+      0
+    ),
   getPlan: (store: Store): Plan =>
-    DAYS.reduce((acc, el) => {
-      acc[el] = store[el];
+    DAYS.reduce((acc, day) => {
+      acc[day] = StoreUtils.getDay(store, day).values;
       return acc;
     }, {} as Plan),
+  getDay: (store: Store, day: Day): DayConfig =>
+    store.days.find((d) => d.day === day)!,
+
+  toPlan: (store: Store): Plan =>
+    store.days.reduce((acc, day) => {
+      acc[day.day] = day.values.reduce((a, b) => a + b, 0);
+      return acc;
+    }, {} as Plan),
+
+  planToDays: (plan: Plan): DayConfig[] =>
+    (Object.entries(plan) as [Day, number[] | number][]).map(
+      ([day, values]) => ({ day, values: [values].flat() })
+    ),
 };

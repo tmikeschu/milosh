@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { Day, StoreUtils, useStore } from "../store";
 import { useMountedState } from "react-use";
+import { UpDownIcon } from "@chakra-ui/icons";
 
 export type DaySliderProps = {
   day: Day;
@@ -31,7 +32,7 @@ export const DaySlider: React.FC<DaySliderProps> = ({
 }) => {
   const store = useStore();
   const getIsMounted = useMountedState();
-  const value = getIsMounted() ? store[day] : 0;
+  const [value] = getIsMounted() ? StoreUtils.getDay(store, day).values : [0];
   const max = (getIsMounted() ? StoreUtils.getMax(store) : 0) + 1;
 
   return (
@@ -76,7 +77,9 @@ export const DaySlider: React.FC<DaySliderProps> = ({
           <SliderTrack>
             <SliderFilledTrack />
           </SliderTrack>
-          <SliderThumb {...sliderThumbProps} />
+          <SliderThumb boxSize="8" {...sliderThumbProps}>
+            <Box as={UpDownIcon} />
+          </SliderThumb>
         </Slider>
       </Box>
     </FormControl>

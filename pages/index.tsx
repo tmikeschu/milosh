@@ -22,7 +22,9 @@ const App: NextPage = () => {
   const store = useStore();
   const toast = useToast();
   const getIsMounted = useMountedState();
-  const total = getIsMounted() ? StoreUtils.getTotal(store) : 0;
+  const total = getIsMounted()
+    ? StoreUtils.getTotal(StoreUtils.toPlan(store))
+    : 0;
 
   return (
     <VStack px={["2", "4"]} py={["8", "10"]} h="100vh">
@@ -53,7 +55,7 @@ const App: NextPage = () => {
           onClick={() => {
             const plan = StoreUtils.getPlan(store);
             store.addPlan(plan);
-            toast({ status: "success", title: "Plan saved" });
+            toast({ status: "success", title: "Plan saved", isClosable: true });
           }}
         >
           Save

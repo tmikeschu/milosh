@@ -9,7 +9,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
-import { Day, useStore } from "../../store";
+import { Day, Plan, StoreUtils, useStore } from "../../store";
 import { useState } from "react";
 import { useSavedPlansContext } from "./context";
 
@@ -17,7 +17,7 @@ const DAY_LABEL_LENGTH = 1;
 const TOTAL_LABEL = "Σ";
 
 export const SavedPlan: React.FC<{
-  plan: Record<Day, number>;
+  plan: Plan;
   index: number;
   onDelete: () => void;
 }> = ({ plan, index: i, onDelete }) => {
@@ -88,7 +88,11 @@ export const SavedPlan: React.FC<{
           alignItems="center"
         >
           <Text>{TOTAL_LABEL}</Text>
-          <Text>{Object.values(plan).reduce((a, b) => a + b)}</Text>
+          <Text>
+            {Object.values(plan)
+              .flat()
+              .reduce((a, b) => a + b)}
+          </Text>
         </Stack>
       </Stack>
 
@@ -104,7 +108,7 @@ export const SavedPlan: React.FC<{
             size="sm"
             borderRadius="full"
             onClick={() => {
-              useStore.setState(plan);
+              useStore.setState({ days: StoreUtils.planToDays(plan) });
               savedPlansContext.modalDisclosure.onClose();
             }}
             aria-label="Copy miles plan"
