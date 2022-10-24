@@ -13,6 +13,7 @@ import type { NextPage } from "next";
 import { SavedPlans } from "../components/saved-plans/saved-plans";
 import { useLegacySavedPlans } from "../hooks/use-legacy-saved-plans";
 import { usePromptNewVersion } from "../hooks/use-prompt-new-version";
+import { useMountedState } from "react-use";
 
 const App: NextPage = () => {
   useLegacySavedPlans();
@@ -20,6 +21,8 @@ const App: NextPage = () => {
 
   const store = useStore();
   const toast = useToast();
+  const getIsMounted = useMountedState();
+  const total = getIsMounted() ? StoreUtils.getTotal(store) : 0;
 
   return (
     <VStack px={["2", "4"]} py={["8", "10"]} h="100vh">
@@ -34,7 +37,7 @@ const App: NextPage = () => {
       </Heading>
 
       <Text as="b" fontWeight="bold" fontSize="3xl" color="gray.700">
-        {StoreUtils.getTotal(store)}mi
+        {total}mi
       </Text>
 
       <HStack p={["2", "4"]} w="full" maxW="xl" flex="1" alignItems="stretch">

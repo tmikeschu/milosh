@@ -68,7 +68,6 @@ export const useStore = create<Store>()(
           ),
       };
     },
-
     {
       name: "milosh",
     }

@@ -15,6 +15,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { Day, StoreUtils, useStore } from "../store";
+import { useMountedState } from "react-use";
 
 export type DaySliderProps = {
   day: Day;
@@ -29,6 +30,9 @@ export const DaySlider: React.FC<DaySliderProps> = ({
   formControlProps = {},
 }) => {
   const store = useStore();
+  const getIsMounted = useMountedState();
+  const value = getIsMounted() ? store[day] : 0;
+  const max = (getIsMounted() ? StoreUtils.getMax(store) : 0) + 1;
 
   return (
     <FormControl as={VStack} key={day} h="full" flex="1" {...formControlProps}>
@@ -43,7 +47,7 @@ export const DaySlider: React.FC<DaySliderProps> = ({
         variant="flushed"
         w="8"
         textAlign="center"
-        value={store[day]}
+        value={value}
         onFocus={(e) => {
           e.target.setSelectionRange(0, e.target.value.length);
         }}
@@ -57,12 +61,13 @@ export const DaySlider: React.FC<DaySliderProps> = ({
 
       <Box h="full" cursor="pointer" role="button">
         <Slider
+          aria-label={`${day} miles`}
           colorScheme="purple"
-          value={store[day]}
+          value={value}
           onChange={(value) => store.setDay({ day, value })}
           orientation="vertical"
           min={0}
-          max={StoreUtils.getMax(store) + 1}
+          max={max}
           focusThumbOnChange={false}
           {...sliderProps}
           pointerEvents="auto"
