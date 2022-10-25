@@ -2,6 +2,8 @@ import produce from "immer";
 import create from "zustand";
 import { persist } from "zustand/middleware";
 import * as R from "remeda";
+import { Option } from "space-monad";
+import { match, P } from "ts-pattern";
 
 export const DAYS = [
   "monday",
@@ -83,19 +85,26 @@ export const useStore = create<Store>()(
           set((current) => {
             return {
               days: produce(current.days, (draft) => {
-                const dayConfig = draft.find((d) => d.day === day)!;
-                if (dayConfig.values.length === 1) {
-                  const [value] = dayConfig.values;
-                  if (value >= 8) {
-                    dayConfig.values = [value - 3, 3];
-                  } else {
-                    dayConfig.values.push(0);
+                Option(draft.find((d) => d.day === day)).forEach(
+                  (dayConfig) => {
+                    match(dayConfig)
+                      .with(
+                        { values: [P.number, P.number] },
+                        ({ values: [a, b] }) => {
+                          dayConfig.values = [a + b];
+                        }
+                      )
+                      .when(
+                        ({ values: [value] }) => value >= 8,
+                        ({ values: [value] }) => {
+                          dayConfig.values = [value - 3, 3];
+                        }
+                      )
+                      .otherwise(() => {
+                        dayConfig.values.push(0);
+                      });
                   }
-                } else {
-                  dayConfig.values = [
-                    dayConfig.values.reduce((a, b) => a + b, 0),
-                  ];
-                }
+                );
               }),
             };
           }),
