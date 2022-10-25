@@ -12,12 +12,10 @@ import { DaySlider } from "../components/day-slider";
 import type { NextPage } from "next";
 import { SavedPlans } from "../components/saved-plans/saved-plans";
 import { useLegacySavedPlans } from "../hooks/use-legacy-saved-plans";
-import { usePromptNewVersion } from "../hooks/use-prompt-new-version";
 import { useMountedState } from "react-use";
 
 const App: NextPage = () => {
   useLegacySavedPlans();
-  usePromptNewVersion();
 
   const store = useStore();
   const toast = useToast();
@@ -33,12 +31,12 @@ const App: NextPage = () => {
         fontSize="lg"
         textTransform="uppercase"
         fontWeight="bold"
-        color="purple.500"
+        color="gray.500"
       >
-        How much should I run today?
+        Weekly mileage planner
       </Heading>
 
-      <Text as="b" fontWeight="bold" fontSize="3xl" color="gray.700">
+      <Text as="b" fontWeight="bold" fontSize="3xl" color="purple.500">
         {total}mi
       </Text>
 

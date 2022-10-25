@@ -4,9 +4,9 @@
   "display": "fullscreen",
   "scope": "",
   "start_url": "/",
-  "name": "How Much Should I Run Today?",
+  "name": "Weekly Mileage Planner",
   "description": "Weekly mileage running planner",
-  "short_name": "HMSIRT",
+  "short_name": "Mileage Planner",
   "icons": [
     {
       "src": "/icon-192x192.png",

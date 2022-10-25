@@ -13,10 +13,18 @@ import {
   SliderThumbProps,
   FormControlProps,
   Box,
+  IconButton,
+  Center,
+  Divider,
 } from "@chakra-ui/react";
 import { Day, StoreUtils, useStore } from "../store";
 import { useMountedState } from "react-use";
-import { UpDownIcon } from "@chakra-ui/icons";
+import {
+  MinusIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  UpDownIcon,
+} from "@chakra-ui/icons";
 
 export type DaySliderProps = {
   day: Day;
@@ -32,56 +40,88 @@ export const DaySlider: React.FC<DaySliderProps> = ({
 }) => {
   const store = useStore();
   const getIsMounted = useMountedState();
-  const [value] = getIsMounted() ? StoreUtils.getDay(store, day).values : [0];
+  const values = getIsMounted() ? StoreUtils.getDay(store, day).values : [0];
   const max = (getIsMounted() ? StoreUtils.getMax(store) : 0) + 1;
+  const isDouble = values.length > 1;
+  const dayAbbrev = day.slice(0, 3);
 
   return (
-    <FormControl as={VStack} key={day} h="full" flex="1" {...formControlProps}>
-      <FormLabel color="gray.400" margin="0">
-        {day.slice(0, 3)}
-      </FormLabel>
-
-      <Input
-        color="purple.500"
-        fontWeight="bold"
-        type="tel"
-        variant="flushed"
-        w="8"
-        textAlign="center"
-        value={value}
-        onFocus={(e) => {
-          e.target.setSelectionRange(0, e.target.value.length);
-        }}
-        onChange={(e) =>
-          store.setDay({ day, value: Number(e.target.value) || 0 })
+    <VStack h="full" flex="1">
+      <IconButton
+        aria-label={`Split ${day} to doubles`}
+        size="sm"
+        onClick={() => store.splitDay(day)}
+        colorScheme={isDouble ? "purple" : "gray"}
+        variant="ghost"
+        icon={
+          <Center w="full" h="full">
+            <VStack spacing="-1">
+              <ChevronUpIcon
+                boxSize="5"
+                transition="transform 0.3s"
+                {...(isDouble ? { transform: "rotate(180deg)" } : {})}
+              />
+              <Divider borderColor="purple.500" />
+              <ChevronDownIcon
+                boxSize="5"
+                transition="transform 0.2s"
+                {...(isDouble ? { transform: "rotate(180deg)" } : {})}
+              />
+            </VStack>
+          </Center>
         }
       />
-      <Text fontSize="sm" color="gray.400">
-        mi
-      </Text>
 
-      <Box h="full" cursor="pointer" role="button">
-        <Slider
-          aria-label={`${day} miles`}
-          colorScheme="purple"
-          value={value}
-          onChange={(value) => store.setDay({ day, value })}
-          orientation="vertical"
-          min={0}
-          max={max}
-          focusThumbOnChange={false}
-          {...sliderProps}
-          pointerEvents="auto"
-          isDisabled={sliderProps.isDisabled || formControlProps.isDisabled}
-        >
-          <SliderTrack>
-            <SliderFilledTrack />
-          </SliderTrack>
-          <SliderThumb boxSize="8" {...sliderThumbProps}>
-            <Box as={UpDownIcon} />
-          </SliderThumb>
-        </Slider>
-      </Box>
-    </FormControl>
+      <FormControl as={VStack} {...formControlProps} flex="1">
+        <FormLabel color="gray.400" margin="0">
+          {dayAbbrev}
+        </FormLabel>
+
+        {values.map((value, index) => (
+          <VStack key={index} flex="1">
+            <Input
+              color="purple.500"
+              fontWeight="bold"
+              type="tel"
+              variant="flushed"
+              w="8"
+              textAlign="center"
+              value={value}
+              onFocus={(e) => {
+                e.target.setSelectionRange(0, e.target.value.length);
+              }}
+              onChange={(e) =>
+                store.setDay({ day, value: Number(e.target.value) || 0, index })
+              }
+            />
+            <Text fontSize="sm" color="gray.400">
+              mi
+            </Text>
+
+            <Slider
+              aria-label={`${day} miles`}
+              colorScheme="purple"
+              value={value}
+              onChange={(value) => store.setDay({ day, value, index })}
+              orientation="vertical"
+              min={0}
+              max={max}
+              focusThumbOnChange={false}
+              {...sliderProps}
+              pointerEvents="auto"
+              isDisabled={sliderProps.isDisabled || formControlProps.isDisabled}
+              flex="1"
+            >
+              <SliderTrack>
+                <SliderFilledTrack />
+              </SliderTrack>
+              <SliderThumb boxSize="6" {...sliderThumbProps}>
+                <Box color="purple.200" boxSize="3" as={UpDownIcon} />
+              </SliderThumb>
+            </Slider>
+          </VStack>
+        ))}
+      </FormControl>
+    </VStack>
   );
 };

@@ -2,9 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  pwa: {
-    skipWaiting: false,
-  },
 };
 
 const withPWA = require("next-pwa")({

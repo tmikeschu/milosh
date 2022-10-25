@@ -7,6 +7,7 @@ import {
   useBreakpointValue,
   Divider,
   Spacer,
+  VStack,
 } from "@chakra-ui/react";
 import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
 import { Day, Plan, StoreUtils, useStore } from "../../store";
@@ -36,11 +37,9 @@ export const SavedPlan: React.FC<{
       onFocus={() => setIsActive(true)}
       onBlur={() => setIsActive(false)}
     >
-      <Spacer flex="1" />
-
       <Stack
         direction="row"
-        w="75%"
+        w="90%"
         maxW="xl"
         key={i}
         boxShadow="base"
@@ -65,19 +64,23 @@ export const SavedPlan: React.FC<{
 
         <Divider orientation="vertical" borderColor="purple.200" />
 
-        {(Object.entries(plan) as [Day, number][]).map(([day, number]) => (
-          <Stack
-            direction="column"
-            fontSize={["sm", "md"]}
-            alignItems="center"
-            key={day}
-          >
-            <Text color="gray.800" fontWeight="bold">
-              {day.slice(0, DAY_LABEL_LENGTH)}
-            </Text>
-            <Text color="purple.800">{number}</Text>
-          </Stack>
-        ))}
+        {(Object.entries(plan) as [Day, number | number[]][]).map(
+          ([day, values]) => (
+            <Stack
+              direction="column"
+              fontSize={["sm", "md"]}
+              alignItems="center"
+              key={day}
+            >
+              <Text color="gray.800" fontWeight="bold">
+                {day.slice(0, DAY_LABEL_LENGTH)}
+              </Text>
+              <Text key={i} color="purple.800">
+                {[values].flat().join(",")}
+              </Text>
+            </Stack>
+          )
+        )}
 
         <Stack
           key="total"
@@ -101,6 +104,7 @@ export const SavedPlan: React.FC<{
         opacity={isXs || isActive ? "1" : "0"}
         transition="opacity 0.2s"
         px="1"
+        justifyContent="center"
       >
         <ButtonGroup spacing="px" flexDirection="column">
           <IconButton

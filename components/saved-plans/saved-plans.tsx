@@ -66,7 +66,7 @@ export const SavedPlans: React.FC = () => {
           </ModalHeader>
           <ModalCloseButton />
 
-          <ModalBody px="0" py="2">
+          <ModalBody py="2">
             <VStack>
               {savedPlans.map((plan, i) => (
                 <SavedPlan
