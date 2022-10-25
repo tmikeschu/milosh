@@ -11,6 +11,7 @@ import {
   useToast,
   useDisclosure,
   ModalOverlay,
+  Text,
 } from "@chakra-ui/react";
 import { useMountedState } from "react-use";
 import { useStore } from "../../store";
@@ -18,6 +19,7 @@ import { SavedPlan } from "./saved-plan";
 import { DeleteSavedPlanAlert } from "./delete-saved-plan-alert";
 import * as React from "react";
 import { SavedPlansProvider } from "./context";
+import { match } from "ts-pattern";
 
 export const SavedPlans: React.FC = () => {
   // Because we're using `useLocalStorage`,
@@ -68,17 +70,21 @@ export const SavedPlans: React.FC = () => {
 
           <ModalBody py="2">
             <VStack>
-              {savedPlans.map((plan, i) => (
-                <SavedPlan
-                  key={i}
-                  plan={plan}
-                  index={i}
-                  onDelete={() => {
-                    setIndexToDelete(i);
-                    disclosure.onOpen();
-                  }}
-                />
-              ))}
+              {match(savedPlans)
+                .with([], () => <Text color="gray.500">No saved plans.</Text>)
+                .otherwise((savedPlans) =>
+                  savedPlans.map((plan, i) => (
+                    <SavedPlan
+                      key={i}
+                      plan={plan}
+                      index={i}
+                      onDelete={() => {
+                        setIndexToDelete(i);
+                        disclosure.onOpen();
+                      }}
+                    />
+                  ))
+                )}
             </VStack>
           </ModalBody>
 
